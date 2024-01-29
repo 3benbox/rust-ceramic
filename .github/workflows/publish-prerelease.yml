@@ -6,7 +6,7 @@ permissions:
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "none" ]
     paths:
       - 'Cargo.toml'
 
