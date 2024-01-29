@@ -97,6 +97,23 @@ jobs:
         echo "PROTOC=/usr/local/bin/protoc" >> $GITHUB_ENV
         echo "PROTOC_INCLUDE=/usr/local/include" >> $GITHUB_ENV
     - name: Build
-      run: make build
-
+      run: make build # Update to push an image, look at the cd-to-infra.yml file for an example.
+  correctness-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Get Network template and update
+      run: |
+        apt-get update && apt-get install -y curl yq
+        curl -LO https://github.com/3box/ceramic-tests/releases/download/v0.2.0/hermetic-driver-x86_64-linux
+        mv hermetic-driver-x86_64-linux ./bin/hermetic-driver
+        chmod +x ./bin/hermetic-driver
+        curl -LO https://raw.githubusercontent.com/3box/ceramic-tests/main/networks/basic-rust.yaml
+        yq e '.spec.ceramic[0].ipfs.rust.image = strenv(RUST_CERAMIC_IMAGE)' basic-rust.yaml
+    - name: Run correctness-tests
+      run: |
+        ./bin/hermetic-driver test \
+          --network basic-rust.yaml \
+          --flavor smoke \
+          --test-selector "fast"
 
