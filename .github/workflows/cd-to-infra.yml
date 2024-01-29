@@ -5,7 +5,7 @@ permissions:
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "none" ]
   # Trigger on all release events until we can figure out the optimal selection
   release:
 
@@ -73,7 +73,7 @@ jobs:
             # "prerelease" flag.
             #
             # Strangely enough, the "edited" and "released" events are triggered when promoting the pre-release to a
-            # release through the GitHub console (╯°□°)╯︵ ┻━┻ 
+            # release through the GitHub console (╯°□°)╯︵ ┻━┻
             if [[ "${{ github.event.action }}" == "published" && "${{ github.event.release.prerelease }}" == "true" ]]; then
               DEPLOY_ENV="tnet"
             elif [[ "${{ github.event.action }}" == "released" ]]; then
